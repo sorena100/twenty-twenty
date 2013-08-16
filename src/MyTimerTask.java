@@ -1,15 +1,12 @@
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.TimerTask;
 
 import javax.swing.JOptionPane;
 
 
 public class MyTimerTask extends TimerTask {
-  public void run(){
+	public void run(){
 		Showarm sa = new Showarm();
-		JOptionPane.showMessageDialog(sa, "۲۰ ثانیه به ۲۰ قدمی نگاه کن!","آلارم",JOptionPane.INFORMATION_MESSAGE);
-			
+		JOptionPane.showMessageDialog(sa, "look at somewhere 20 steps far","",JOptionPane.INFORMATION_MESSAGE);
 		
 	}
 }
