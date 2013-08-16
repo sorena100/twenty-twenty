@@ -1,8 +1,7 @@
 import java.awt.AWTException;
-import java.awt.ComponentOrientation;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Frame;
 import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
@@ -13,86 +12,84 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.Date;
-import java.util.Stack;
+import java.net.URL;
 import java.util.Timer;
-import java.util.TimerTask;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
-import javax.smartcardio.CommandAPDU;
-import javax.swing.JButton;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.Popup;
-import javax.swing.UIManager;
-import javax.xml.bind.ParseConversionEvent;
+import javax.swing.JPanel;
 
 
 public class Showarm extends JFrame{
-  
-	MyTime mt = new MyTime();
-	int min0 = mt.run0();
-	int min1 = mt.run1();
-	int min2 = mt.run2();
+	
+	
+	
 	
 	JLabel lbhelp,lbhelp2;
 	TrayIcon trayIcon;
     SystemTray tray;
 	
 	public Showarm(){
-		
-		super("twenty twenty");
-		setIconImage(Toolkit.getDefaultToolkit().getImage("icon.png"));
+		super("Twenty twenty");
+
+		URL iconURL = getClass().getResource("icon.png");
+		ImageIcon icon = new ImageIcon(iconURL);
+		setIconImage(icon.getImage());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLayout(new FlowLayout());
-		setSize(500, 300);
+		setSize(670, 300);
+		setResizable(false);
+		setLocationRelativeTo(getRootPane());
+		
 		//componenets
+		URL iconURL2 = getClass().getResource("original.jpg");
+		ImageIcon pic = new ImageIcon(iconURL2);
+		JLabel pn = new JLabel(pic);
 		lbhelp = new JLabel();
 		lbhelp2 = new JLabel();
-		lbhelp2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-		lbhelp.setText("هر ۲۰ دقیقه به مدت ۲۰ ثانیه به ۲۰ قدمی خود نگاه کنید!");
-		String s = "<html>"+ "برای بخاطر سپاری بهتر و رفع خستگی چشمها، عده ای قانون 20-20-20 را پیشنهاد می کنند یعنی، هر 20 دقیقه، 20 ثانیه به جایی در 20 قدمی خود نگاه کنید (این 20 قدم چیزی حدود 6-7 متر می شود) اما من ترجیح می دهم این قانون را به این صورت اصلاح کنم: هر 20 دقیقه 20 ثانیه به فاصله دور نگاه کنید و 20 قدم هم راه بروید. اینطوری هم از خستگی چشمها در امان خواهید بود و هم درد کمر و کتف و شانه ها کمتر به سراغتان می آید. چون توصیه شده است که بعد از مدتی نشستن، بهتر است چند قدم راه بروید. ‏" + "</html>";
+		lbhelp.setText("Each 20 min look at somewhere 20 steps far for 20 sec!");
+		String s = "<html>"+ "Observe the 20-20-20 Rule. Looking into the distance to let your eyes relax is called the 20-20-20 rule, and is an easy trick to remember to reduce eyestrain. The rule says that for every 20 minutes you spend staring at the computer, you should spend 20 seconds looking at objects 20 feet away – or at least far enough away that your eyes aren't working to focus.‏" + "</html>";
 		lbhelp2.setText(s);
-		lbhelp2.setPreferredSize(new Dimension(450, 275));
-		add(lbhelp);
-		add(lbhelp2);
+		lbhelp2.setPreferredSize(new Dimension(300, 175));
 		
+		JPanel belowpan = new JPanel();
+		belowpan.setLayout(new BoxLayout(belowpan, BoxLayout.X_AXIS));
+		belowpan.add(lbhelp2);
+		belowpan.add(pn);
 		
+		JPanel mainpan = new JPanel();
+		mainpan.setPreferredSize(new Dimension(660, 300));
+		mainpan.setLayout(new BoxLayout(mainpan, BoxLayout.Y_AXIS));
+		mainpan.add(lbhelp);
+		lbhelp.setAlignmentX(Component.CENTER_ALIGNMENT);
+		mainpan.add(new JLabel("  "));
+		mainpan.add(new JLabel("  "));
+		mainpan.add(belowpan);
 		
+		add(mainpan);
+		
+		//Timer
 		final Timer t = new Timer();
 		MyTimerTask task = new MyTimerTask();
-		t.schedule(task, 1000l * 60 * 20);
+		t.schedule(task, 1000l * 60 * 20); //set 20 min loop
 		
 		
 		
 		//tray icon
-	        //System.out.println("creating instance");
-	        try{
-	            //System.out.println("setting look and feel");
-	            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-	        }catch(Exception e){
-	            //System.out.println("Unable to set LookAndFeel");
-	        }
 	        if(SystemTray.isSupported()){
-	            //System.out.println("system tray supported");
 	            tray=SystemTray.getSystemTray();
-
-	            Image image = Toolkit.getDefaultToolkit().getImage("tray.png");
 	            ActionListener exitListener=new ActionListener() {
 	                public void actionPerformed(ActionEvent e) {
-	                    //System.out.println("Exiting....");
 	                    System.exit(0);
 	                }
 	            };
 	            PopupMenu popup=new PopupMenu();
-	            MenuItem defaultItem=new MenuItem("خروج");
+	            MenuItem defaultItem=new MenuItem("Exit");
 	            defaultItem.addActionListener(exitListener);
 	            popup.add(defaultItem);
-	            defaultItem=new MenuItem("پنجره اصلی");
+	            defaultItem=new MenuItem("Home");
 	            defaultItem.addActionListener(new ActionListener() {
 	                public void actionPerformed(ActionEvent e) {
 	                    setVisible(true);
@@ -100,26 +97,25 @@ public class Showarm extends JFrame{
 	                }
 	            });
 	            popup.add(defaultItem);
-	            final MenuItem pauseItem=new MenuItem("مکث");
+	            final MenuItem pauseItem=new MenuItem("pause");
 	            popup.add(pauseItem);
-	            //final String name = pauseItem.getLabel();
 	            pauseItem.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e){
 						
-						if (pauseItem.getLabel() == "مکث") {
+						if (pauseItem.getLabel() == "pause") {
 							t.cancel();
-							pauseItem.setLabel("ادامه");
+							pauseItem.setLabel("resume");
 						}
-						else if (pauseItem.getLabel() == "ادامه") {
+						else if (pauseItem.getLabel() == "resume") {
 							Timer t = new Timer();
 							MyTimerTask task = new MyTimerTask();
 							t.schedule(task, 1000l * 60 * 20);
-							pauseItem.setLabel("مکث");
+							pauseItem.setLabel("pause");
 						}
 					}
 					
 				});
-	            
+	            Image image = Toolkit.getDefaultToolkit().getImage("tray.png");
 	            trayIcon=new TrayIcon(image, "twenty-twenty", popup);
 	            trayIcon.setImageAutoSize(true);
 	            trayIcon.addActionListener(new ActionListener() {
@@ -129,6 +125,7 @@ public class Showarm extends JFrame{
 					}
 				});
 	        }else{
+	        	System.out.println("Warning: System Tray is not suported!");
 	        }
 	        addWindowStateListener(new WindowStateListener() {
 	            public void windowStateChanged(WindowEvent e) {
@@ -161,3 +158,4 @@ public class Showarm extends JFrame{
 		
 	}
 }
+
